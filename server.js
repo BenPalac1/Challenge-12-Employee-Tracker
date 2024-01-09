@@ -20,14 +20,13 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_db database!`)
 );
 
+db.connect(function (err) {
+    if (err) throw err;
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
 
-// db.connect((err) => {
-//     if (err) throw err;
-//     // console.log("Connected to the database!");
-//     console.log("Server runnng on port 3306");
-//     console.log(err, results);
-//     start();
-// });
+
+
