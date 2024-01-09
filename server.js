@@ -1,4 +1,4 @@
-// const inquirer = require('inquirer');
+const inquirer = require('inquirer');
 const express = require('express');
 const mysql = require('mysql2');
 
@@ -9,7 +9,7 @@ const app = express();
 app.use(express.urlencoded({ extended: false}));
 app.use(express.json());
 
-
+//create connection with mysql
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -27,6 +27,55 @@ db.connect(function (err) {
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+// app starts and show choices for user to select from
+function userPrompts() {
+    inquirer
+        .prompt({
+            type: "list",
+            name: "choices",
+            message: "What wouyld you like to do?",
+            choices: [
+                "View all departments",
+                "View all roles",
+                "View all employees",
+                "Add a dept",
+                "Add a role",
+                "Add an employee",
+                "Update an employee role",
+                "Quit"
+            ],
+        })
+        .then((answer) => {
+            switch (answer.choices) {
+                case "View all departments":
+                    viewAllDepartments();
+                    break;
+                case "View all roles":
+                    viewAllRoles();
+                    break;
+                case "View all employees":
+                    viewAllEmployees();
+                    break;
+                case "Add a dept":
+                    addDepartment();
+                    break;
+                case "Add a role":
+                    addRole();
+                    break;
+                case  "Add an employee":
+                    addEmployee();
+                    break;
+                case "Update an employee role":
+                    updateEmployeeRole();
+                    break;
+                case "Quit":
+                    db.end();
+                    console.log("Disconnected, Goodbye!");
+                    break;
+            }
+        });
+};
 
 
 
