@@ -77,5 +77,14 @@ function userPrompts() {
         });
 };
 
+function viewAllDepartments() {
+    db.query("SELECT * FROM departments", (err, results) => {
+        if (err) throw err;
+        console.table(results);
+        display
+
+    })
+}
+
 
 
