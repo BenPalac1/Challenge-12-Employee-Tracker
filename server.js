@@ -17,7 +17,7 @@ const db = mysql.createConnection(
         password: '15_LesPaul_15',
         database: 'employee_db'
     },
-    console.log(`Connected to the employee_db database!`)
+    console.log(`Successfully connected to employee_db database!`)
 );
 
 db.connect(function (err) {
@@ -26,10 +26,12 @@ db.connect(function (err) {
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
+
+    start();
 });
 
 // app starts and show choices for user to select from
-function userPrompts() {
+function start() {
     inquirer
         .prompt({
             type: "list",
@@ -71,20 +73,17 @@ function userPrompts() {
                     break;
                 case "Quit":
                     db.end();
-                    console.log("Disconnected, Goodbye!");
+                    console.log("Successfully Disconnected!");
                     break;
             }
         });
-};
-
-function viewAllDepartments() {
-    db.query("SELECT * FROM departments", (err, results) => {
-        if (err) throw err;
-        console.table(results);
-        display
-
-    })
 }
 
+function viewAllDepartments() {
+    db.query("SELECT * FROM departments", (err, res) => {
+        if (err) throw err;
+        console.table(res);
 
-
+        start();
+    });
+}
