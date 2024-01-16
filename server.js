@@ -104,7 +104,7 @@ function start() {
 async function viewAllDepartments() {
     db.query('SELECT * FROm department', function (err, res) {
         if (err) {
-            console.err('Error: ', err);
+            console.error('Error: ', err);
         } else {
             console.table(res);
         }
@@ -116,7 +116,7 @@ async function viewAllDepartments() {
 async function viewAllRoles() {
     db.query('SELECT * FROM role', function (err, res) {
         if (err) {
-            console.err('Error: ', err);
+            console.error('Error: ', err);
         } else {
             console.table(res);
         }
@@ -128,7 +128,7 @@ async function viewAllRoles() {
 async function viewAllEmployees() {
     db.query('SELECT * FROM employee', function (err, res) {
         if (err) {
-            console.err('Error: ', err);
+            console.error('Error: ', err);
         } else {
             console.table(res);
         }
@@ -153,7 +153,7 @@ class Department {
             db.query(`INSERT INTO department (name) VALUES ("${answers.department}")`)
             db.query('SELECT * FROM department', function (err, res) {
                 if (err) {
-                    console.err('Error: ', err);
+                    console.error('Error: ', err);
                 } else {
                     console.table(res);
                 }
@@ -169,5 +169,93 @@ async function newDepartment() {
     userInput.run(newDepartmentParams)
 }
 
+// prompts user to input role title, salary, and department of new role
+const newRoleParams = [
+    {
+      type: 'input',
+      name: 'title',
+      message: 'What is title of the new role? ',
+    },
+    {
+      type: 'input',
+      name: 'salary',
+      message: 'What is the salary for the new role? ',
+    },
+    {
+      type: 'list',
+      name: 'department',
+      message: 'Which department is the role in ? ',
+      choices: [],
+      loop: false
+    },
+  ];
 
+//callback function to fetch department names for user to select  
+  function fetchDepartments(callback) {
+    db.query('SELECT name FROM department', function(err, res) {
+        if (err) {
+            console.error("Error: ", err);
+        } else {
+            const nameDepartment = res.map(department => department.name);
+            callback(null, nameDepartment)
+        }
+    });
+}
+
+class NewRole {
+
+    async run(questions) {
+
+        // retrieves all departments
+        const departments = await new Promise ((resolve, reject) => {
+            fetchDepartments((err, allDepartments) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(allDepartments)
+                }
+            });
+        });
+
+        questions[2].choices = departments;
+        const answers = await inquirer.prompt(questions);
+        async function addRole() {
+
+            let department_id = undefined;
+
+            // retreives dept ID to add to role table
+            const d_id = await new Promise((resolve, reject) => {
+                db.query(`SELECT id FROM department WHERE name = "${answers.department}"`, (err, res) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(res);
+                    }
+                });
+            });
+
+            if (d_id.length > 0) {
+            department_id = d_id[0].id;
+            }
+
+            // puts newly added role info into the role table
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${answers.title}", "${answers.salary}", ${department_id})`)
+            db.query('SELECT * FROM role', function (err, res) {
+                if (err) {
+                    console.error('Error: ', err);
+                } else {
+                    console.table(res)
+                    start();
+                }
+            });
+        }
+        await addRole()
+    }
+}
+
+// function for adding a new role
+async function newRole() {
+    const userInput = new NewRole();
+    userInput.run(newRoleParams)
+}
   
