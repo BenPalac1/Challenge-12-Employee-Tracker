@@ -100,20 +100,39 @@ function start() {
     handleUserInput();
 }
 
-// view all employees
-async function viewAllEmployees() {
-    db.query('SELECT * FROM employee', function (err, results) {
+// view all  departments
+async function viewAllDepartments() {
+    db.query('SELECT * FROm department', function (err, res) {
         if (err) {
-            console.error('Error: ', err);
+            console.err('Error: ', err);
         } else {
-            const tableData = results.map(({ index, ...rest }) => rest);
-            console.table(tableData);
+            console.table(res);
         }
     start();
     });
 }
 
+// view all roles
+async function viewAllRoles() {
+    db.query('SELECT * FROM role', function (err, res) {
+        if (err) {
+            console.err('Error: ', err);
+        } else {
+            console.table(res);
+        }
+    start();
+    });
+}
 
-
-
+// view all employees
+async function viewAllEmployees() {
+    db.query('SELECT * FROM employee', function (err, res) {
+        if (err) {
+            console.err('Error: ', err);
+        } else {
+            console.table(res);
+        }
+    start();
+    });
+}
   
