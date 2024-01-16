@@ -1,3 +1,4 @@
+// import inquirer, express, and mysql2
 const inquirer = require('inquirer');
 const express = require('express');
 const mysql = require('mysql2');
@@ -31,59 +32,88 @@ app.listen(PORT, () => {
 });
 
 // app starts and show choices for user to select from
-function start() {
-    inquirer
-        .prompt({
-            type: "list",
-            name: "choices",
-            message: "What wouyld you like to do?",
-            choices: [
-                "View all departments",
-                "View all roles",
-                "View all employees",
-                "Add a dept",
-                "Add a role",
-                "Add an employee",
-                "Update an employee role",
-                "Quit"
-            ],
-        })
-        .then((answer) => {
-            switch (answer.choices) {
-                case "View all departments":
-                    viewAllDepartments();
-                    break;
-                case "View all roles":
-                    viewAllRoles();
-                    break;
-                case "View all employees":
-                    viewAllEmployees();
-                    break;
-                case "Add a dept":
-                    addDepartment();
-                    break;
-                case "Add a role":
-                    addRole();
-                    break;
-                case  "Add an employee":
-                    addEmployee();
-                    break;
-                case "Update an employee role":
-                    updateEmployeeRole();
-                    break;
-                case "Quit":
-                    db.end();
-                    console.log("Successfully Disconnected!");
-                    break;
-            }
-        });
+class UserInput {
+    async run() {
+        const { options } = await inquirer.prompt([
+            {
+                type: 'list',
+                name: 'options',
+                message: 'What would you like to do: ',
+                choices: [
+                    'View All Employees', 
+                    'Add Employee', 
+                    'View All Roles',
+                    'Update Employee Role', 
+                    'Add Role', 
+                    'View All Departments', 
+                    'Add Department',
+                    'Quit'
+                ],
+                loop: false
+            } 
+        ]);
+
+        return options;
+        
+    }
 }
 
-function viewAllDepartments() {
-    db.query("SELECT * FROM departments", (err, res) => {
-        if (err) throw err;
-        console.table(res);
+const userInput = new UserInput()
 
-        start();
+// user input from the prompt menu
+async function handleUserInput() {
+    const selectedOption = await userInput.run();
+
+    switch (selectedOption) {
+        case 'Quit':
+            console.log('Goodbye!');
+            process.exit(0);
+            break;
+        case 'View All Employees':
+            viewAllEmployees();
+            break;
+        case 'Add Employee':
+            addEmployee();
+            break;
+        case 'View All Roles':
+            viewAllRoles();
+            break;
+        case 'View All Departments':
+            viewAllDepartments();
+            break;
+        case 'Update Employee Role':
+            updateEmployeeRole();
+            break;
+        case 'Add Role':
+            newRole();
+            break;
+        case 'Add Department':
+            newDepartment();
+            break;
+        default:
+            console.log(`You selected: ${selectedOption}`);
+            handleUserInput();
+    }
+}
+
+function start() {
+    handleUserInput();
+}
+
+// view all employees
+async function viewAllEmployees() {
+    db.query('SELECT * FROM employee', function (err, results) {
+        if (err) {
+            console.error('Error: ', err);
+        } else {
+            const tableData = results.map(({ index, ...rest }) => rest);
+            console.table(tableData);
+        }
+    start();
     });
 }
+
+
+
+
+  
