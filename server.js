@@ -100,7 +100,7 @@ function start() {
     handleUserInput();
 }
 
-// view all  departments
+// view all departments
 async function viewAllDepartments() {
     db.query('SELECT * FROm department', function (err, res) {
         if (err) {
@@ -135,4 +135,39 @@ async function viewAllEmployees() {
     start();
     });
 }
+
+// prompts user to input a new dept. name
+const newDepartmentParams = [
+    {
+        type: 'input',
+        name: 'department',
+        message: 'What is the new department name?',
+    }
+]
+
+class Department {
+    async run(questions) {
+        const answers = await inquirer.prompt(questions);
+
+        async function createNewDepartment() {
+            db.query(`INSERT INTO department (name) VALUES ("${answers.department}")`)
+            db.query('SELECT * FROM department', function (err, res) {
+                if (err) {
+                    console.err('Error: ', err);
+                } else {
+                    console.table(res);
+                }
+            start();
+            });
+        }
+        await createNewDepartment()
+    }
+}
+
+async function newDepartment() {
+    const userInput = new Department();
+    userInput.run(newDepartmentParams)
+}
+
+
   
