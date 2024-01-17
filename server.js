@@ -68,7 +68,6 @@ async function handleUserInput() {
         case 'Quit':
             console.log('Goodbye!');
             process.exit(0);
-            break;
         case 'View All Employees':
             viewAllEmployees();
             break;
@@ -145,7 +144,7 @@ const newDepartmentParams = [
     }
 ]
 
-class Department {
+class AddDepartment {
     async run(questions) {
         const answers = await inquirer.prompt(questions);
 
@@ -165,7 +164,7 @@ class Department {
 }
 
 async function newDepartment() {
-    const userInput = new Department();
+    const userInput = new AddDepartment();
     userInput.run(newDepartmentParams)
 }
 
@@ -184,7 +183,7 @@ const newRoleParams = [
     {
       type: 'list',
       name: 'department',
-      message: 'Which department is the role in ? ',
+      message: 'Which department is the role in? ',
       choices: [],
       loop: false
     },
@@ -192,21 +191,21 @@ const newRoleParams = [
 
 //callback function to fetch department names for user to then select
   function fetchDepartments(callback) {
-    db.query('SELECT name FROM department', function(err, res) {
+    db.query('SELECT name FROM department', (err, res) => {
         if (err) {
             console.error("Error: ", err);
+            callback(err);
         } else {
             const nameDepartment = res.map(department => department.name);
-            callback(null, nameDepartment)
+            callback(null, nameDepartment);
         }
     });
 }
 
-class NewRole {
-
+class AddRole {
     async run(questions) {
 
-        // retrieves all departments
+        // retrieves depts.
         const departments = await new Promise ((resolve, reject) => {
             fetchDepartments((err, allDepartments) => {
                 if (err) {
@@ -217,14 +216,14 @@ class NewRole {
             });
         });
 
-        questions[2].choices = departments;
+        questions[2].choices = departments;// updates departments, 3rd option in array
         const answers = await inquirer.prompt(questions);
-        async function addRole() {
 
+        async function addRole() {
             let department_id = undefined;
 
             // retreives dept ID to then add to role table
-            const d_id = await new Promise((resolve, reject) => {
+            const dept_id = await new Promise((resolve, reject) => {
                 db.query(`SELECT id FROM department WHERE name = "${answers.department}"`, (err, res) => {
                     if (err) {
                         reject(err);
@@ -234,8 +233,8 @@ class NewRole {
                 });
             });
 
-            if (d_id.length > 0) {
-            department_id = d_id[0].id;
+            if (dept_id.length > 0) {
+            department_id = dept_id[0].id;
             }
 
             // puts newly added role info into the role table
@@ -255,7 +254,7 @@ class NewRole {
 
 // function for adding a new role
 async function newRole() {
-    const userInput = new NewRole();
+    const userInput = new AddRole();
     userInput.run(newRoleParams)
 }
 
@@ -287,3 +286,61 @@ const addEmployeePrompts = [
     },
   ];
 
+  // callback function to fetch roles for user to choose from
+function fetchRoles(callback) {
+    db.query('SELECT title FROM role', (err, res) => {
+        if (err) {
+            console.error("Error: ", err);
+            callback(err);
+        } else {
+            const roleTitles = res.map(role => role.title);
+            callback(null, roleTitles);
+        }
+    });
+}
+
+// callback function to fetch the Managers for user to choose from
+function fetchManagers(callback) {
+    db.query('SELECT first_name, last_name FROM employee', (err, res) => {
+        if (err) {
+            console.error("Error: ", err);
+            callback(err);
+        } else {
+            const managerNames = res.map(manager => `${manager.first_name} ${manager.last_name}`);
+            callback(null, managerNames);
+        }
+    });
+}
+
+
+class AddEmployee {
+    async run(questions) {
+
+        const roles = await new Promise((resolve, reject) => {
+            fetchRoles((err, roleTitles) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(roleTitles);
+                }
+            });
+        });
+
+        questions[2].choices = roles; // updates role, from questions array
+
+        const managers = await new Promise((resolve, reject) => {
+            fetchManagers((err, allManagers) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    allManagers.push('NULL');
+                    resolve(allManagers)
+                }
+            });
+        });
+
+        questions[3].choices = managers; // updates manager, from questions array
+        
+    }
+
+}
