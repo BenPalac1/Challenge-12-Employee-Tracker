@@ -190,7 +190,7 @@ const newRoleParams = [
     },
   ];
 
-//callback function to fetch department names for user to select  
+//callback function to fetch department names for user to then select
   function fetchDepartments(callback) {
     db.query('SELECT name FROM department', function(err, res) {
         if (err) {
@@ -223,7 +223,7 @@ class NewRole {
 
             let department_id = undefined;
 
-            // retreives dept ID to add to role table
+            // retreives dept ID to then add to role table
             const d_id = await new Promise((resolve, reject) => {
                 db.query(`SELECT id FROM department WHERE name = "${answers.department}"`, (err, res) => {
                     if (err) {
@@ -258,4 +258,32 @@ async function newRole() {
     const userInput = new NewRole();
     userInput.run(newRoleParams)
 }
-  
+
+// prompts user to enter employees first name, last name, role, and manager
+const addEmployeePrompts = [
+    {
+      type: 'input',
+      name: 'firstName',
+      message: 'What is their first name? ',
+    },
+    {
+      type: 'input',
+      name: 'lastName',
+      message: 'What is their last name? ',
+    },
+    {
+      type: 'list',
+      name: 'Role',
+      message: 'What is their role? ',
+      choices: [],
+      loop: false
+    },
+    {
+      type: 'list',
+      name: 'Manager',
+      message: 'Managers Name? ',
+      choices: [],
+      loop: false
+    },
+  ];
+
