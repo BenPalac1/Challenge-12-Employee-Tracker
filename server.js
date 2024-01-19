@@ -406,4 +406,9 @@ async function addEmployee() {
     userInput.run(addEmployeePrompts)
 };
 
+//need to add function to epdate employee role
+async function updateEmployeeRole() {
+    
+}
+
 
