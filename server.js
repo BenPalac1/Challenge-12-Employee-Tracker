@@ -149,7 +149,7 @@ class AddDepartment {
         const answers = await inquirer.prompt(questions);
 
         async function createNewDepartment() {
-            db.query(`INSERT INTO department (name) VALUES ("${answers.department}")`)
+            db.query(`INSERT INTO department (name) VALUES ('${answers.department}')`)
             db.query('SELECT * FROM department', function (err, res) {
                 if (err) {
                     console.error('Error: ', err);
@@ -224,7 +224,7 @@ class AddRole {
 
             // retreives dept ID to then add to role table
             const dept_id = await new Promise((resolve, reject) => {
-                db.query(`SELECT id FROM department WHERE name = "${answers.department}"`, (err, res) => {
+                db.query(`SELECT id FROM department WHERE name = '${answers.department}'`, (err, res) => {
                     if (err) {
                         reject(err);
                     } else {
@@ -238,7 +238,7 @@ class AddRole {
             }
 
             // puts newly added role info into the role table
-            db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${answers.title}", "${answers.salary}", ${department_id})`)
+            db.query(`INSERT INTO role (title, salary, department_id) VALUES ('${answers.title}', '${answers.salary}', ${department_id})`)
             db.query('SELECT * FROM role', function (err, res) {
                 if (err) {
                     console.error('Error: ', err);
@@ -341,6 +341,69 @@ class AddEmployee {
 
         questions[3].choices = managers; // updates manager, from questions array
         
-    }
+        const answers = await inquirer.prompt(questions);
 
+        async function newEmployee() {
+
+            let role_id = undefined;
+            let manager_id = undefined;
+            const manager_name = answers.Manager.split (' ');
+
+            const empRole_id = await new Promise((resolve, reject) => {
+                db.query(`SELECT id FROM role WHERE title = '${answers.Role}'`,
+                    (err, res) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(res);
+                        }
+                });
+            });
+
+            const empMngr_id = await new Promise((resolve, reject) => {
+                db.query(`SELECT id FROM employee WHERE first_name = '${manager_name[0]}' AND last_name = '${manager_name[1]}'`,
+                    (err, res) => {
+                        if (err) {
+                            reject(err);
+                        } else {
+                            resolve(res);
+                        }
+                });
+            });
+
+            if (empRole_id.length > 0) {
+                role_id = empRole_id[0].id;
+            }
+
+            if (empMngr_id.length > 0) {
+                manager_id = empMngr_id[0].id;
+            }
+
+            db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+                VALUES (
+                    '${answers.firstName}', 
+                    '${answers.lastName}', 
+                    ${role_id}, 
+                    ${manager_id}
+            )`)
+
+            db.query('SELECT * FROM employee', function (err, res) {
+                if (err) {
+                    res(err);
+                } else {
+                    console.table(res)
+                    start();
+                }
+            });
+        }
+        await newEmployee()
+    }
 }
+
+//func for adding a new Employee
+async function addEmployee() {
+    const userInput = new AddEmployee();
+    userInput.run(addEmployeePrompts)
+};
+
+
