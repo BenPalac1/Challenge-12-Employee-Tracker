@@ -1,5 +1,13 @@
-# Challenge-12-Employee-Tracker
-SQL Challenge
+# My-Team-Tracker
+SQL Challenge: Employee-Tracker
+Challenge-12
+<br>
+<br>
+
+## Description
+
+Developers frequently have to create interfaces that allow non-developers to easily view and interact with information stored in databases. These interfaces are called content management systems (CMS). 
+For this module, my assignment was to build a command-line application from scratch to manage a company's employee database, using Node.js, Inquirer, and MySQL.
 
 ## User Story
 
@@ -8,6 +16,8 @@ AS A business owner
 I WANT to be able to view and manage the departments, roles, and employees in my company
 
 SO THAT I can organize and plan my business
+<br>
+<br>
 
 ## Acceptance Criteria
 
@@ -46,10 +56,51 @@ THEN I am prompted to enter the employee’s first name, last name, role, and ma
 WHEN I choose to update an employee role
 
 THEN I am prompted to select an employee to update and their new role and this information is updated in the database
+<br>
+<br>
 
+## Link to Video Showing Functionaity:
 
+https://www.youtube.com/watch?v=g5FxhtWSVVQ
+<br>
+<br>
 
+## Built and Tested with:
+    - Javascript
+    - Node.js
+    - Inquirer
+    - MySQL
 
+## Other Resources Used:
+    - Google
+    - Stack Overflow
+    - Module 12 Activites, especially the mini project
+    - used npmjs.com for reference
 
+## License
 
-used npmjs.com for reference
+MIT License
+
+Copyright (c) 2023 Ben Palacpac
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+## Badges
+
+![badmath](https://img.shields.io/github/languages/top/lernantino/badmath)
