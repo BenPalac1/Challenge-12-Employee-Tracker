@@ -407,8 +407,5 @@ async function addEmployee() {
 };
 
 //need to add function to epdate employee role
-async function updateEmployeeRole() {
-    
-}
 
 
